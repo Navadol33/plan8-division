@@ -77,15 +77,15 @@ footer { color: var(--muted); font-size: 14px; }
 footer .wrap { padding-block: 0 32px; }
 
 /* viewer */
-.viewer { position: fixed; inset: 0; background: var(--bg); z-index: 20; display: grid; grid-template-rows: auto 1fr; }
+.viewer { position: fixed; inset: 0; background: var(--bg); z-index: 20; display: grid; grid-template-rows: auto minmax(0, 1fr); grid-template-columns: minmax(0, 1fr); }
 .viewer[hidden] { display: none; }
 .vbar { background: var(--board); color: var(--board-ink); padding-top: calc(10px + env(safe-area-inset-top, 0px)); padding-bottom: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; gap: 12px; align-items: center; }
 .vbar h3 { font-family: var(--display); font-weight: 500; font-size: 16px; margin: 0; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .btn { font: inherit; font-size: 14px; border-radius: 8px; padding: 6px 14px; border: 1.5px solid var(--board-ink); background: transparent; color: var(--board-ink); cursor: pointer; text-decoration: none; white-space: nowrap; }
 .btn.primary { background: var(--chalk); color: #1d2a24; border-color: var(--chalk); }
 .btn:focus-visible { outline: 3px solid var(--chalk); outline-offset: 2px; }
-.pages { overflow: auto; padding-block: 16px 40px; padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); display: grid; gap: 14px; justify-items: center; align-content: start; }
-.pages canvas { width: 100%; max-width: 820px; height: auto; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.15); border-radius: 4px; }
+.pages { overflow: auto; padding-block: 16px 40px; padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; justify-items: center; align-content: start; }
+.pages canvas { display: block; width: 100%; max-width: 820px; height: auto; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.15); border-radius: 4px; }
 .status { color: var(--muted); padding: 40px 0; text-align: center; }
 
 @media (max-width: 560px) {
@@ -188,8 +188,8 @@ async function openPlan(n, title) {
     const pdf = await pdfjsLib.getDocument(url).promise;
     if (my !== token) return;
     pages.innerHTML = "";
-    const width = Math.min(pages.clientWidth - 24, 820);
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const width = Math.min(pages.clientWidth - 24, window.innerWidth - 24, 820);
+    const dpr = Math.min((window.devicePixelRatio || 1) * 1.5, 3);
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
       if (my !== token) return;
